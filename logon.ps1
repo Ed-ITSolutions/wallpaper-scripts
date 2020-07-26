@@ -26,4 +26,4 @@ Remove-Item -Path "$($env:APPDATA)\Microsoft\Windows\Themes\*" -Recurse -Force -
 Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name WallpaperStyle -Value "2" -Force
 Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name TileWallpaper -Value "0" -Force
 
-[Wallpaper.UpdateImage]::Refresh($DestinationFile)
+[Wallpaper.UpdateImage]::Refresh($outputImage)
