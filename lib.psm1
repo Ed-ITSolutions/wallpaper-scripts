@@ -105,6 +105,8 @@ Add-Type @"
 
   $rectangle = [System.Drawing.RectangleF]::FromLTRB(0, 0, $screenResolution.Width, $screenResolution.Height)
 
+  $image.DrawImage($sourceImage, 0, 0, $screenResolution.Width, $screenResolution.Height)
+
   Write-Text $image $header $config $false $config.header.alignment $rectangle
   Write-Text $image $footer $config $true $config.footer.alignment $rectangle
 
@@ -177,8 +179,6 @@ function Write-Text{
 
   $boxBrushColour = New-Object Drawing.SolidBrush $boxARGB
   $textBrushColour = New-Object Drawing.SolidBrush $textARGB
-
-  $image.DrawImage($sourceImage, 0, 0, $screenResolution.Width, $screenResolution.Height)
 
   $image.FillRectangle($boxBrushColour, $startX, $startY, $endX, $endY)
   $image.DrawString($text, $font, $textBrushColour, $rectangle, $formatFont)
