@@ -1,3 +1,10 @@
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [String]
+    $ini = $PSScriptRoot + "\wallpaper.ini"
+)
+
 # Copied from https://www.reddit.com/r/PowerShell/comments/3s8a2n/parse_an_ini_or_similar_file_and_store_the/
 function Read-IniFile{
   [CmdletBinding()]
@@ -182,4 +189,24 @@ function Write-Text{
 
   $image.FillRectangle($boxBrushColour, $startX, $startY, $endX, $endY)
   $image.DrawString($text, $font, $textBrushColour, $rectangle, $formatFont)
+}
+
+$config = Read-IniFile -file $ini
+
+$inputImage = Resolve-FilePath -filePath $config.files.inputImage
+$outputImage = Resolve-FilePath -filePath $config.files.outputImage
+
+$header = Resolve-Text -text $config.header.text
+$footer = Resolve-Text -text $config.footer.text
+
+Write-Wallpaper $inputImage $outputImage $header $footer $config
+
+if($config.files.applyTouser -eq 1){
+  Remove-Item -Path "$($env:APPDATA)\Microsoft\Windows\Themes\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+  # Ensure image is set to Stretch to screen resolution and not tile.
+  Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name WallpaperStyle -Value "2" -Force
+  Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' -Name TileWallpaper -Value "0" -Force
+
+  [Wallpaper.UpdateImage]::Refresh($outputImage)
 }
